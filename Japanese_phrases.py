@@ -5,7 +5,7 @@ MENUS = ["1) Play", "2) Reward", "3) Score", "4) quit"]
 print("Welcome to the Japanese phrases game!")
 for menu in MENUS:
     print(menu)
-user_choice = input("please pick an option: ")
+user_choice = input("please pick an option: "):
 if user_choice == 1:
     print("playing game")
 elif user_choice == 2:
