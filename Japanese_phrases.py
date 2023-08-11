@@ -26,10 +26,10 @@ def game():
         {
             "question": "How many “alphabets” does Japanese have?",
             "options": ["1", "2", "3", "4"],
-            "correct_answer": 2,
+            "correct_answer": 3,
         },
         {
-            "question": "How do you say 'Good night' in Japanese?",
+            "question": "How do you say 'Good evening' in Japanese?",
             "options": ["おはよう (Ohayou)", "こんばんは (Konbanwa)", "さようなら (Sayonara)", "いただきます (Itadakimasu)"],
             "correct_answer": 2,
         },
@@ -85,16 +85,22 @@ print("Improve and learn basic phrases in Japanese by answering questions correc
 print("Gain rewards by getting high scores!\n")
 
 while loop:
+    print("\n")
     for menu in MENUS:
         print(menu)
 
     try:
-        user_choice = int(input("Please pick an option: "))
+        user_choice = int(input("\nPlease pick an option: "))
         if user_choice == 1:
-            print("Playing game...")
+            print("\nPlaying game...\n")
             round_score = 0
+            deduct_points = False
 
-            for question in game():
+            questions = game()
+            random.shuffle(questions)
+            round_data = questions[:5]
+
+            for idx, question in enumerate(round_data):
                 print(question["question"])
                 for i, option in enumerate(question["options"], start=1):
                     print(f"{i}) {option}")
@@ -102,28 +108,45 @@ while loop:
                 try:
                     user_answer = int(input("Your answer (1-4): "))
                     if user_answer == question["correct_answer"]:
-                        print("Correct!\n")
-                        risk_choice = input("Do you want to risk your current score for a chance to earn a higher score? (y/n): ")
-                        if risk_choice.lower() == "y":
-                            multiplier = random.randint(2, 4)  # Random multiplier between 2 and 4
-                            round_score += multiplier
-                        else:
-                            round_score += 1
+                        print("\nCorrect!\n")
+                        round_score += idx + 1 
+                        print(f"Your current score: {round_score} points")
+                        if idx < 4:
+                            print(f"Potential points for the next question: {round_score + idx + 2}")
+                        if idx == 4 or input("Do you want to continue to the next question? (y/n): ").lower() != "y":
+                            break
                     else:
-                        print("Incorrect.\n")
+                        print("\nIncorrect.\n")
+                        deduct_points = True
+                        break
                 except ValueError:
-                    print("Invalid input. Skipping question.\n")
+                    print("\nInvalid input. Skipping question.\n")
 
-            print("Round complete!")
+                if deduct_points:
+                    print("You lost all points from this round.")
+                    break
+
+            score += max(0, round_score)
+
+            print("\nRound complete!")
             print(f"You earned {round_score} points in this round.")
-            score += round_score
+            print(f"Your total score is now: {score}")
 
         elif user_choice == 2:
-            print("Rewards earned so far")
+            print("Rewards earned so far:")
+            if score >= 15:
+                print("bronze medal 🥉 (15)")
+            if score >= 30:
+                print("silver medal 🥈 (30)")
+            if score >= 45:
+                print("gold medal 🥇 (45)")
+            if score < 15:
+                print("Nothing here yet... Earn more points for more rewards!")
+
         elif user_choice == 3:
             print(f"Your current score is: {score}")
         elif user_choice == 4:
-            print("Thank you for playing")
+            print("\nThank you for playing")
             loop = False
         else:
             print("Please select a valid choice")
